@@ -56,6 +56,10 @@
     margin: 0 0 10px 0;
   }
 
+  #map {
+    height: 100%;
+  }
+
   button {
     margin: 0 0 10px 0 ;
   }
