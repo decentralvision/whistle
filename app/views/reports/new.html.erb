@@ -1,16 +1,109 @@
 
 <a href="/homepage"> Back</a>
 
-
 <h1>Create a New Report</h1>
 
-<form action="/reports" method="POST">
-  <label> Location </label> </br>
+<form action="/reports" method="POST" onkeypress="return event.keyCode != 13;">
+  <label for="category"> Category </label>
 
+  <input list="category" name="category">
+  <datalist id="category" >
+    <%@categories.each do |category|%>
+      <option value="<%=category.name%>">
+    <%end%>
+  </datalist>
+  <label for="suspect_details"> Detailed Description of Suspect</label>
+  <textarea id="suspect_details" name="suspect_details" cols="100" rows="10"> </textarea>
+  <label for="event_details"> Detailed Description of Event</label>
+  <textarea id="event_details" name="event_details" cols="100" rows="10"> </textarea>
   </br>
-  <label for="content"> Detailed Description of Event</label></br>
-  <textarea id="content" name="content" cols="100" rows="10"> </textarea>
+  <label> Location </label>
+  <div id="map"></div>
   </br>
   <input id="submit" type="submit" value="Submit">
+  <input type="hidden" name="latInput" id="latInput">
+  <input type="hidden" name="lngInput" id="lngInput">
 </form>
 
+<input id="pac-input" class="controls" type="text" placeholder="Search">
+
+<div id="map"></div>
+
+<script>
+  function initAutocomplete() {
+    var map = new google.maps.Map(document.getElementById('map'), {
+      center: {lat: 39, lng: -95},
+      zoom: 4,
+      mapTypeId: 'roadmap'
+    });
+
+    // Create the search box and link it to the UI element.
+    var input = document.getElementById('pac-input');
+    var searchBox = new google.maps.places.SearchBox(input);
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+    // Bias the SearchBox results towards current map's viewport.
+    map.addListener('bounds_changed', function() {
+      searchBox.setBounds(map.getBounds());
+    });
+
+    var markers = [];
+    // Listen for the event fired when the user selects a prediction and retrieve
+    // more details for that place.
+    searchBox.addListener('places_changed', function() {
+      var places = searchBox.getPlaces();
+
+      if (places.length == 0) {
+        return;
+      }
+
+      // Clear out the old markers.
+      markers.forEach(function(marker) {
+        marker.setMap(null);
+      });
+      markers = [];
+
+      // After search change the viewport to center on that location.
+      var bounds = new google.maps.LatLngBounds();
+      places.forEach(function(place) {
+        if (!place.geometry) {
+          console.log("Returned place contains no geometry");
+          return;
+        }
+        if (place.geometry.viewport) {
+          // Only geocodes have viewport.
+          bounds.union(place.geometry.viewport);
+        } else {
+          bounds.extend(place.geometry.location);
+        }
+      });
+      map.fitBounds(bounds);
+    });
+
+    google.maps.event.addListener(map, 'click', function(event) {
+      if (markers.length != 0) {
+        markers.forEach(function(marker) {
+        marker.setMap(null);
+      });
+      markers = [];
+      }
+      var marker = new google.maps.Marker({
+          position: event.latLng,
+          map: map,
+          draggable:true,
+          animation: google.maps.Animation.DROP
+      });
+      markers.push(marker)
+      document.getElementById("latInput").value = event.latLng.lat().toFixed(6);
+      document.getElementById("lngInput").value = event.latLng.lng().toFixed(6);
+      google.maps.event.addListener(marker, 'dragend', function (event) {
+        document.getElementById("latInput").value = event.latLng.lat().toFixed(6);
+        document.getElementById("lngInput").value = event.latLng.lng().toFixed(6);
+      });
+    });
+  }
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBAneFzNBHiiM-bqqVR_orqqtsyCbsj-o&libraries=places&callback=initAutocomplete"
+async defer>
+</script>

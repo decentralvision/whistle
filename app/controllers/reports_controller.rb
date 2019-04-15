@@ -5,13 +5,16 @@ class ReportsController < ApplicationController
     erb :"/reports/index.html"
   end
 
-  # GET: /reports/new
-  get "/reports/new" do
+  # GET: /report/new
+  get "/report/new" do
+    @categories = Category.all
     erb :"/reports/new.html"
   end
 
-  # POST: /reports
-  post "/reports" do
+  # POST: /report
+  post "/report" do
+    
+    Report.new(params)
     redirect "/reports"
   end
 

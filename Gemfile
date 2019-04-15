@@ -11,6 +11,9 @@ gem 'shotgun'
 gem 'pry'
 gem 'bcrypt'
 gem "tux"
+gem 'json'
+gem 'geocoder'
+gem 'gmaps4rails'
 
 group :test do
   gem 'rspec'
