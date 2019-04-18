@@ -37,7 +37,7 @@ class ReportsController < ApplicationController
   # GET: /reports/5/edit
   get "/reports/:id/edit" do
     @report = Report.find(params[:id])
-    if users_report?
+    if users_report? && logged_in?
       erb :"/reports/edit.html"
     else 
       redirect "/reports/#{params[:id]}"
@@ -47,7 +47,7 @@ class ReportsController < ApplicationController
   # PATCH: /reports/5
   patch "/reports/:id/edit" do
     @report = Report.find(params[:id])
-    if users_report? 
+    if users_report? && logged_in?
       @report.update(:suspect_desc => params[:suspect_desc].strip, :event_desc => params[:event_desc].strip, :lat => params[:lat], :lng => params[:lng])
       redirect "/reports/#{params[:id]}"
     else 
@@ -58,7 +58,7 @@ class ReportsController < ApplicationController
   # DELETE: /reports/5/delete
   delete "/reports/:id/delete" do
     @report = Report.find(params[:id])
-    if users_report? 
+    if users_report? && logged_in?
       @report.delete
       redirect "/homepage"
     else
