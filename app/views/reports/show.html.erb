@@ -1,1 +1,49 @@
-<h1>This is the show page for an individual instance of your model.</h1>
+
+<h1>Report ID: <%=@report.id%></h1>
+<h1>Date of Report:</h1><p><%=@report.created_at%>
+<h1>What happened:</h1><p><%=@report.event_desc%></p>
+<h1>Suspect Description:</h1><p><%=@report.suspect_desc%></p>
+<h1>Location:</h1> <!-- placeholder map -->
+<div id="map"></div>
+<h4>Latitude:</h4> <p id="lat"> <%=@report.lat%></p>
+<h4>Longitude:</h4> <p id="lng"> <%=@report.lng%></p>
+<%if users_report?%>
+<h1><a href="/reports/<%=@report.id%>/edit">Edit</a></h1>
+<h1><a href="/reports/<%=@report.id%>/delete">Delete</a></h1>
+<%end%>
+<script>
+  function initAutocomplete() {
+    var latLng = {lat: parseFloat(document.getElementById('lat').innerHTML), lng: parseFloat(document.getElementById('lng').innerHTML)}
+    var map = new google.maps.Map(document.getElementById('map'), {
+      center: latLng,
+      zoom: 17,
+      mapTypeId: 'hybrid',
+      disableDefaultUI: true,
+      zoomControl: true
+    });
+    
+    // Create infowindow for markers
+    var infowindow = new google.maps.InfoWindow({
+      content: 'Location of incident.'
+    });
+
+      // After search change the viewport to center on that location.
+      var bounds = new google.maps.LatLngBounds();
+
+      var marker = new google.maps.Marker({
+          position: latLng,
+          map: map,
+          draggable: false, 
+          animation: google.maps.Animation.DROP
+      });
+
+      marker.addListener('click', function() {
+          infowindow.open(map, marker);
+      });
+
+    }
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBAneFzNBHiiM-bqqVR_orqqtsyCbsj-o&libraries=places&callback=initAutocomplete"
+async defer>
+</script>

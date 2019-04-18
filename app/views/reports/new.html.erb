@@ -3,26 +3,17 @@
 
 <h1>Create a New Report</h1>
 
-<form action="/reports" method="POST" onkeypress="return event.keyCode != 13;">
-  <label for="category"> Category </label>
+<form action="/report" method="POST" onkeypress="return event.keyCode != 13;">
 
-  <input list="category" name="category">
-  <datalist id="category" >
-    <%@categories.each do |category|%>
-      <option value="<%=category.name%>">
-    <%end%>
-  </datalist>
-  <label for="suspect_details"> Detailed Description of Suspect</label>
-  <textarea id="suspect_details" name="suspect_details" cols="100" rows="10"> </textarea>
+  <label for="suspect_desc"> Detailed Description of Suspect</label>
+  <textarea id="suspect_desc" name="suspect_desc" cols="100" rows="10"> </textarea>
   <label for="event_details"> Detailed Description of Event</label>
-  <textarea id="event_details" name="event_details" cols="100" rows="10"> </textarea>
-  </br>
+  <textarea id="event_desc" name="event_desc" cols="100" rows="10"> </textarea>
   <label> Location </label>
   <div id="map"></div>
-  </br>
   <input id="submit" type="submit" value="Submit">
-  <input type="hidden" name="latInput" id="latInput">
-  <input type="hidden" name="lngInput" id="lngInput">
+  <input type="hidden" name="lat" id="lat">
+  <input type="hidden" name="lng" id="lng">
 </form>
 
 <input id="pac-input" class="controls" type="text" placeholder="Search">
@@ -34,9 +25,14 @@
     var map = new google.maps.Map(document.getElementById('map'), {
       center: {lat: 39, lng: -95},
       zoom: 4,
-      mapTypeId: 'roadmap'
+      mapTypeId: 'hybrid',
+      disableDefaultUI: true,
+      zoomControl: true
     });
-
+    // Create infowindow for markers
+    var infowindow = new google.maps.InfoWindow({
+      content: 'Location of incident.'
+    });
     // Create the search box and link it to the UI element.
     var input = document.getElementById('pac-input');
     var searchBox = new google.maps.places.SearchBox(input);
@@ -48,6 +44,7 @@
     });
 
     var markers = [];
+
     // Listen for the event fired when the user selects a prediction and retrieve
     // more details for that place.
     searchBox.addListener('places_changed', function() {
@@ -66,41 +63,74 @@
       // After search change the viewport to center on that location.
       var bounds = new google.maps.LatLngBounds();
       places.forEach(function(place) {
+
+        var marker = new google.maps.Marker({
+          map: map,
+          title: place.name,
+          draggable:true,
+          position: place.geometry.location
+        });
+
+        marker.addListener('click', function() {
+          infowindow.open(map, marker);
+        });
+
+        document.getElementById("lat").value = place.geometry.location.lat().toFixed(6);
+        document.getElementById("lng").value = place.geometry.location.lng().toFixed(6);
+
+        // Create a marker for each place.
+        markers.push(marker);
+
         if (!place.geometry) {
           console.log("Returned place contains no geometry");
           return;
         }
+
         if (place.geometry.viewport) {
           // Only geocodes have viewport.
           bounds.union(place.geometry.viewport);
         } else {
           bounds.extend(place.geometry.location);
         }
+
       });
+
       map.fitBounds(bounds);
     });
 
     google.maps.event.addListener(map, 'click', function(event) {
+
       if (markers.length != 0) {
         markers.forEach(function(marker) {
         marker.setMap(null);
       });
+
       markers = [];
       }
+
       var marker = new google.maps.Marker({
           position: event.latLng,
           map: map,
-          draggable:true,
+          draggable:true, 
           animation: google.maps.Animation.DROP
       });
-      markers.push(marker)
-      document.getElementById("latInput").value = event.latLng.lat().toFixed(6);
-      document.getElementById("lngInput").value = event.latLng.lng().toFixed(6);
-      google.maps.event.addListener(marker, 'dragend', function (event) {
-        document.getElementById("latInput").value = event.latLng.lat().toFixed(6);
-        document.getElementById("lngInput").value = event.latLng.lng().toFixed(6);
+
+      marker.addListener('click', function() {
+          infowindow.open(map, marker);
       });
+
+      markers.push(marker)
+
+      document.getElementById("lat").value = event.latLng.lat().toFixed(6);
+      document.getElementById("lng").value = event.latLng.lng().toFixed(6);
+
+      google.maps.event.addListener(marker, 'dragend', function (event) {
+        document.getElementById("lat").value = event.latLng.lat().toFixed(6);
+        document.getElementById("lng").value = event.latLng.lng().toFixed(6);
+      });
+
     });
+
   }
 </script>
 

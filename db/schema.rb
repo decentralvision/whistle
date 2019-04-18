@@ -11,34 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190410233248) do
-
-  create_table "categories", force: :cascade do |t|
-    t.string   "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "notes", force: :cascade do |t|
-    t.integer  "report_id"
-    t.string   "content"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "report_categories", force: :cascade do |t|
-    t.integer  "report_id"
-    t.string   "category_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-  end
+ActiveRecord::Schema.define(version: 20190410205709) do
 
   create_table "reports", force: :cascade do |t|
-    t.string   "content"
-    t.string   "location"
-    t.date     "string"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "suspect_desc"
+    t.string   "event_desc"
+    t.float    "lat"
+    t.float    "lng"
+    t.integer  "user_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   create_table "users", force: :cascade do |t|
