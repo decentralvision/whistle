@@ -9,7 +9,10 @@
 <h4>Longitude:</h4> <p id="lng"> <%=@report.lng%></p>
 <%if users_report?%>
 <h1><a href="/reports/<%=@report.id%>/edit">Edit</a></h1>
-<h1><a href="/reports/<%=@report.id%>/delete">Delete</a></h1>
+<form method="post" action="/reports/<%=@report.id%>/delete">
+  <input id="hidden" type="hidden" name="_method" value="DELETE">
+  <h1><input id="Delete Report" type="submit" value="Delete Report"></h1>
+</form>
 <%end%>
 <script>
   function initAutocomplete() {

@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-
+  use Rack::Flash
   get "/signup" do
     if logged_in?
       redirect "/homepage"
@@ -10,10 +10,15 @@ class UsersController < ApplicationController
   
   post "/signup" do
     if params.none? {|param, value| value.empty?}
-      user = User.new(:username => params[:username], :password => params[:password])
-      if user.save
-        session[:user_id] = user.id
-        redirect "/homepage"
+      if User.find_by username: params[:username]
+        flash[:message] = "Username already taken"
+        redirect "/signup"
+      else
+        user = User.new(:username => params[:username], :password => params[:password])
+        if user.save
+          session[:user_id] = user.id
+          redirect "/homepage"
+        end
       end
     else
       redirect "/signup"

@@ -4,7 +4,7 @@
 <h1>Edit Report</h1>
 
 <form action="/report" method="POST" onkeypress="return event.keyCode != 13;">
-  <input type="hidden" name="_method" value="PATCH">
+ <input type="hidden" name="_method" value="PATCH">
   <label for="suspect_desc"> Detailed Description of Suspect</label>
   <textarea id="suspect_desc" name="suspect_desc" cols="100" rows="10"> <%=@report.suspect_desc%></textarea>
   <label for="event_details"> Detailed Description of Event</label>

@@ -14,6 +14,7 @@ gem "tux"
 gem 'json'
 gem 'geocoder'
 gem 'gmaps4rails'
+gem 'rack-flash3'
 
 group :test do
   gem 'rspec'
