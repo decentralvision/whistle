@@ -2,8 +2,13 @@ class ReportsController < ApplicationController
 
   # GET: /reports
   get "/reports" do
-    @reports = Report.find_by user_id: session[:user_id]
-    erb :"/reports/index.html"
+    if logged_in?
+      @reports = Report.where(user_id: session[:user_id])
+      erb :"/reports/index.html"
+    else
+      @reports = Report.all
+      erb :"/reports/index.html"
+    end
   end
 
   # GET: /report/new
@@ -40,11 +45,11 @@ class ReportsController < ApplicationController
   end
 
   # PATCH: /reports/5
-  patch "/reports/:id" do
+  patch "/reports/:id/edit" do
     @report = Report.find(params[:id])
     if users_report? 
       @report.update(:suspect_desc => params[:suspect_desc].strip, :event_desc => params[:event_desc].strip, :lat => params[:lat], :lng => params[:lng])
-      redirect "/reports/:id"
+      redirect "/reports/#{params[:id]}"
     else 
       redirect "/reports/#{params[:id]}"
     end
