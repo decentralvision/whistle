@@ -1,3 +1,9 @@
+<a href="/landing"><h1>Back</h1></a>
+
+<% if flash.has?(:message) %>
+  <%= flash[:message] %>
+<% end %>
+
 <h3>Login</h3>
 <form action="/login" method="POST">
   <input type="text" name="username" placeholder="Username:">
