@@ -6,9 +6,9 @@
 <form action="/reports/<%=@report.id%>/edit" method="POST" onkeypress="return event.keyCode != 13;">
   <input type="hidden" name="_method" value="PATCH">
   <label for="suspect_desc"> Detailed Description of Suspect</label>
-  <textarea id="suspect_desc" name="suspect_desc" cols="100" rows="10"> <%=@report.suspect_desc%></textarea>
+  <textarea id="suspect_desc" name="suspect_desc" cols="100" rows="10" required="required"> <%=@report.suspect_desc%></textarea>
   <label for="event_details"> Detailed Description of Event</label>
-  <textarea id="event_desc" name="event_desc" cols="100" rows="10"><%=@report.event_desc%> </textarea>
+  <textarea id="event_desc" name="event_desc" cols="100" rows="10" required="required"><%=@report.event_desc%> </textarea>
   <label> Location </label>
   <div id="map"></div>
   <input type="hidden" name="lat" id="lat" value="<%=@report.lat%>">

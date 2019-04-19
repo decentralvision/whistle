@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  use Rack::Flash
+  
   get "/signup" do
     if logged_in?
       redirect "/homepage"
@@ -12,6 +12,9 @@ class UsersController < ApplicationController
     if params.none? {|param, value| value.empty?}
       if User.find_by username: params[:username]
         flash[:message] = "Username already taken"
+        redirect "/signup"
+      elsif params[:password].length < 8
+        flash[:message] = "Password must be greater than 8 characters long"
         redirect "/signup"
       else
         user = User.new(:username => params[:username], :password => params[:password])

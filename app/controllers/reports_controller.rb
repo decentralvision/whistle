@@ -11,6 +11,11 @@ class ReportsController < ApplicationController
     end
   end
 
+  get "/reports/map" do
+    @reports = Report.all
+    erb :"/reports/map.html"
+  end
+
   # GET: /report/new
   get "/report/new" do
     if logged_in?
@@ -23,12 +28,17 @@ class ReportsController < ApplicationController
   # POST: /report
   post "/report" do
     if params[:lat].empty?
-      redirect "/report/new"
       flash[:message] = "Please use the map below to select a location."
+      redirect "/report/new"
+    elsif params[:suspect_desc].length < 60
+      flash[:message] = "Please enter a description of the suspect(s) longer than 60 characters"
+      redirect "/report/new"
+    elsif params[:event_desc].length < 60
+      flash[:message] = "Please enter a description of the event(s) longer than 60 characters"
+      redirect "/report/new"
     else
       report = Report.new(:user_id => session[:user_id], :suspect_desc => params[:suspect_desc].strip, :event_desc => params[:event_desc].strip, :lat => params[:lat], :lng => params[:lng])    
       report.save
-      flash[:message] = "Report submitted successfully."
       redirect ("/reports/#{report.id}")
     end
   end
