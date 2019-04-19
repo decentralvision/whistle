@@ -1,3 +1,8 @@
+<%if logged_in?%>
+    <a href="/homepage"> Home </a>
+<%else%>
+    <a href="/landing"> Home </a>
+<%end%>
 <ul>
 <%@reports.each do |report|%>
 <a href="/reports/<%=report.id%>"><li><%=report.id%></li></a>

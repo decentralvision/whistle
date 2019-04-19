@@ -22,10 +22,15 @@ class ReportsController < ApplicationController
 
   # POST: /report
   post "/report" do
-    report = Report.new(:user_id => session[:user_id], :suspect_desc => params[:suspect_desc].strip, :event_desc => params[:event_desc].strip, :lat => params[:lat], :lng => params[:lng])    
-    report.save
-    flash.now[:message] = "Report submitted successfully."
-    redirect ("/reports/#{report.id}")
+    if params[:lat].empty?
+      redirect "/report/new"
+      flash[:message] = "Please use the map below to select a location."
+    else
+      report = Report.new(:user_id => session[:user_id], :suspect_desc => params[:suspect_desc].strip, :event_desc => params[:event_desc].strip, :lat => params[:lat], :lng => params[:lng])    
+      report.save
+      flash[:message] = "Report submitted successfully."
+      redirect ("/reports/#{report.id}")
+    end
   end
 
   # GET: /reports/5

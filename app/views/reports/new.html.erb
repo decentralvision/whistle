@@ -1,7 +1,11 @@
 
-<a href="/homepage"> Back</a>
+<a href="/homepage"> Home</a>
 
 <h1>Create a New Report</h1>
+
+<% if flash.has?(:message) %>
+  <%= flash[:message] %>
+<% end %>
 
 <form action="/report" method="POST" onkeypress="return event.keyCode != 13;">
 
