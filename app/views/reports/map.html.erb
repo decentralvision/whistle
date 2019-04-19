@@ -15,59 +15,78 @@
 </li>
 <% end%>
 </ul>
-<script>
-  function initAutocomplete() {
-    var map = new google.maps.Map(document.getElementById('map'), {
-      center: {lat: 39, lng: -95},
-      zoom: 4,
-      mapTypeId: 'hybrid',
-      disableDefaultUI: true,
-      zoomControl: true
-    });
-
-    markers=[]
-
-    reports = document.getElementsByTagName("li");
-
-    for (i = 0; i < reports.length; i++) {  
-        element = reports[i]
-        id = element.getElementsByClassName("id")[0].innerHTML;
-        created_at = element.getElementsByClassName("created_at")[0].innerHTML;
-        event_desc = element.getElementsByClassName("event_desc")[0].innerHTML;
-        suspect_desc = element.getElementsByClassName("suspect_desc")[0].innerHTML;
-        lat = parseFloat(element.getElementsByClassName("lat")[0].innerHTML);
-        lng = parseFloat(element.getElementsByClassName("lng")[0].innerHTML);
-        latLng = {lat, lng};
-
-        contentString = `<p>${created_at}</p><p>${event_desc}</p><p>${suspect_desc}</p>`;
-
-        marker = new google.maps.Marker({
-            position: latLng,
-            map: map,
-            draggable: false, 
-            animation: google.maps.Animation.DROP,
-            title: id
-        });
-
-        infowindow = new google.maps.InfoWindow({
-            content: contentString
-        });
-
-        marker.addListener('click', function() {
-            infowindow.open(map, marker);
-        });
-
-        markers.push(marker)
-    };
-    
-
-    
-      // After search change the viewport to center on that location.
-    var bounds = new google.maps.LatLngBounds();
-
-    }
-</script>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBAneFzNBHiiM-bqqVR_orqqtsyCbsj-o&libraries=places&callback=initAutocomplete"
 async defer>
 </script>
+
+<script>
+
+var map;
+var infowindow;
+var marker;
+var reports;
+
+function initAutocomplete()  {
+    map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: 39, lng: -95},
+    zoom: 4,
+    mapTypeId: 'hybrid',
+    disableDefaultUI: true,
+    zoomControl: true
+    });
+
+reports = document.getElementsByTagName("li");
+
+function getReport(i) {
+    var report = reports[i];
+    var id = report.getElementsByClassName("id")[0].innerHTML;
+    var created_at = report.getElementsByClassName("created_at")[0].innerHTML;
+    var event_desc = report.getElementsByClassName("event_desc")[0].innerHTML;
+    var suspect_desc = report.getElementsByClassName("suspect_desc")[0].innerHTML;
+    var lat = parseFloat(report.getElementsByClassName("lat")[0].innerHTML);
+    var lng = parseFloat(report.getElementsByClassName("lng")[0].innerHTML);
+    var latLng = {lat, lng};
+    var html = `<p>${created_at}</p><p>${event_desc}</p><p>${suspect_desc}</p>`;
+    var reportArray = [];
+    reportArray.push(id);
+    reportArray.push(latLng);
+    reportArray.push(html);
+    return reportArray;
+};
+
+function createMarker(id, latLng, html) {
+
+    marker = new google.maps.Marker({
+        position: latLng,
+        map: map,
+        title: id,
+        draggable: false, 
+        animation: google.maps.Animation.DROP,
+    });
+    createInfoWindow(marker, html);
+}
+
+function createInfoWindow(m, html) {
+    infowindow = new google.maps.InfoWindow({
+        content: html
+    });
+    m.html = html;
+    google.maps.event.addListener(m, 'click', function() {
+        infowindow.setContent(this.html);
+        infowindow.open(map, this);
+    });
+}
+    
+function processReports(reports) {
+    for (i = 0; i < reports.length; i++) {
+        report = getReport(i);
+        createMarker(report[0], report[1], report[2]);
+    }
+}
+
+processReports(reports);
+
+};
+</script>
+
