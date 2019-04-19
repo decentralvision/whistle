@@ -47,7 +47,7 @@ function getReport(i) {
     var lat = parseFloat(report.getElementsByClassName("lat")[0].innerHTML);
     var lng = parseFloat(report.getElementsByClassName("lng")[0].innerHTML);
     var latLng = {lat, lng};
-    var html = `<p>${created_at}</p><p>${event_desc}</p><p>${suspect_desc}</p>`;
+    var html = `<p>${created_at}</p><p>${event_desc}</p><p>${suspect_desc}</p><a href="/reports/${id}">Report #${id}</a>`;
     var reportArray = [];
     reportArray.push(id);
     reportArray.push(latLng);
