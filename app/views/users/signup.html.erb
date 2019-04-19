@@ -1,7 +1,7 @@
 <a href="/landing"><h1>Back</h1></a>
 
 <% if flash.has?(:message) %>
-  <%= flash[:message] %>
+  <h3 id="error"><%= flash[:message] %></h3>
 <% end %>
 
 <h3>Sign Up</h3>

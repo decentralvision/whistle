@@ -12,10 +12,10 @@ class UsersController < ApplicationController
     if params.none? {|param, value| value.empty?}
       if User.find_by username: params[:username]
         flash[:message] = "Username already taken"
-        redirect "/signup"
+        erb :"/users/signup.html"
       elsif params[:password].length < 8
         flash[:message] = "Password must be greater than 8 characters long"
-        redirect "/signup"
+        erb :"/users/signup.html"
       else
         user = User.new(:username => params[:username], :password => params[:password])
         if user.save
@@ -38,11 +38,12 @@ class UsersController < ApplicationController
 
   post "/login" do
     user = User.find_by(:username => params[:username])
-    if user && user.authenticate(params[:password])
+    if !user || !user.authenticate(params[:password])
+      flash[:message] = "Invalid username or password."
+      erb :'/users/login.html'
+    else
       session[:user_id] = user.id
       redirect "/homepage"
-    else
-      redirect "/login"
     end
   end
 
