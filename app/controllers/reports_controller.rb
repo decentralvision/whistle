@@ -82,6 +82,10 @@ class ReportsController < ApplicationController
   end
 
   def users_report? 
-    current_user.id == @report.user_id ? true : false
+    if logged_in?
+      current_user.id == @report.user_id ? true : false
+    else 
+      false
+    end
   end
 end
