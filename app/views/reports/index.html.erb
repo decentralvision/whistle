@@ -1,10 +1,10 @@
 <%if logged_in?%>
-    <a href="/homepage"> Home </a>
+    <a href="/homepage"><button> Back </button></a>
 <%else%>
-    <a href="/landing"> Home </a>
+    <a href="/landing"><button> Back </button></a>
 <%end%>
 <ul>
 <%@reports.each do |report|%>
-<a href="/reports/<%=report.id%>"><li><%=report.id%></li></a>
+<a href="/reports/<%=report.id%>"><li><%=report.id%></a> - Created: <%=report.created_at%> </li>
 <%end%>
 </ul>
