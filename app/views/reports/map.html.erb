@@ -1,6 +1,9 @@
-<a href="/homepage"> Home</a>
+<%if logged_in? %>
+<a href="/homepage"><button>Back</button></a>
+<%else%>
+<a href="/landing"><button>Back</button></a>
+<%end%>
 
-<h1>Map</h1>
 <div id="map"></div>
 <ul>
 
