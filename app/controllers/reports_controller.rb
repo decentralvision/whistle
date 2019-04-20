@@ -6,9 +6,13 @@ class ReportsController < ApplicationController
       @reports = Report.where(user_id: session[:user_id])
       erb :"/reports/index.html"
     else
-      @reports = Report.all
-      erb :"/reports/index.html"
+      redirect "/reports/all"
     end
+  end
+
+  get "/reports/all" do
+    @reports = Report.all
+    erb :"/reports/index.html"
   end
 
   get "/reports/map" do
