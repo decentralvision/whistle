@@ -58,6 +58,7 @@
 
   p {
     margin-bottom: 18px;
+    overflow: auto;
   }
 
   li {
@@ -74,8 +75,9 @@
   }
 
   .main {
-    overflow: hidden;
+    display: block;
   }
+
 
   .main-image {
     width: 10%;
