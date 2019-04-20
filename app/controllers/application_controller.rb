@@ -13,7 +13,12 @@ class ApplicationController < Sinatra::Base
   end
 
   get "/" do
-    erb :"welcome.html"
+    if session[:disclaimer] == false
+      redirect "/landing"
+    else
+      session[:disclaimer] = false
+      erb :"welcome.html"
+    end
   end
 
   get "/landing" do
