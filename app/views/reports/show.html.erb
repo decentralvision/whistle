@@ -1,4 +1,9 @@
-<a href="/homepage"> Home</a>
+<%if logged_in? %>
+<a href="/homepage"><button>Back</button></a>
+<%else%>
+<a href="/landing"><button>Back</button></a>
+<%end%>
+
 <h1>Report ID: <%=@report.id%></h1>
 <h1>Date of Report:</h1><p><%=@report.created_at%></p>
 <h1>What happened:</h1><p><%=@report.event_desc%></p>
