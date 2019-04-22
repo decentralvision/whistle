@@ -3,7 +3,7 @@ class ReportsController < ApplicationController
   # GET: /reports
   get "/reports" do
     if logged_in?
-      @reports = Report.where(user_id: session[:user_id])
+      @reports = current_user.reports
       erb :"/reports/index.html"
     else
       redirect "/reports/all"
@@ -22,28 +22,28 @@ class ReportsController < ApplicationController
 
   # GET: /report/new
   get "/report/new" do
-    if logged_in?
-      erb :"/reports/new.html"
-    else
-      redirect "/login"
-    end
+    @report = Report.new
+    redirect_if_not_logged_in
+    erb :"/reports/new.html"
   end
 
   # POST: /report
   post "/report" do
+    redirect_if_not_logged_in
+    @report = Report.new(:user_id => session[:user_id], :suspect_desc => params[:suspect_desc].strip, :event_desc => params[:event_desc].strip, :lat => params[:lat], :lng => params[:lng])  
     if params[:lat].empty?
-      flash[:message] = "Please use the map below to select a location."
-      redirect "/report/new"
+      @errors= "Please use the map below to select a location."
+      erb :"/reports/new.html"
     elsif params[:suspect_desc].length < 60
-      flash[:message] = "Please enter a description of the suspect(s) longer than 60 characters"
-      redirect "/report/new"
+      @errors= "Please enter a description of the suspect(s) longer than 60 characters"
+      erb :"/reports/new.html"
     elsif params[:event_desc].length < 60
-      flash[:message] = "Please enter a description of the event(s) longer than 60 characters"
-      redirect "/report/new"
+      @errors= "Please enter a description of the event(s) longer than 60 characters"
+      erb :"/reports/new.html"
     else
-      report = Report.new(:user_id => session[:user_id], :suspect_desc => params[:suspect_desc].strip, :event_desc => params[:event_desc].strip, :lat => params[:lat], :lng => params[:lng])    
-      report.save
-      redirect ("/reports/#{report.id}")
+      # report = Report.new(:user_id => session[:user_id], :suspect_desc => params[:suspect_desc].strip, :event_desc => params[:event_desc].strip, :lat => params[:lat], :lng => params[:lng])    
+      @report.save
+      redirect ("/reports/#{@report.id}")
     end
   end
 
@@ -56,7 +56,7 @@ class ReportsController < ApplicationController
   # GET: /reports/5/edit
   get "/reports/:id/edit" do
     @report = Report.find(params[:id])
-    if users_report? && logged_in?
+    if users_report? 
       erb :"/reports/edit.html"
     else 
       redirect "/reports/#{params[:id]}"
@@ -66,7 +66,7 @@ class ReportsController < ApplicationController
   # PATCH: /reports/5
   patch "/reports/:id/edit" do
     @report = Report.find(params[:id])
-    if users_report? && logged_in?
+    if users_report? 
       @report.update(:suspect_desc => params[:suspect_desc].strip, :event_desc => params[:event_desc].strip, :lat => params[:lat], :lng => params[:lng])
       redirect "/reports/#{params[:id]}"
     else 
@@ -77,7 +77,7 @@ class ReportsController < ApplicationController
   # DELETE: /reports/5/delete
   delete "/reports/:id/delete" do
     @report = Report.find(params[:id])
-    if users_report? && logged_in?
+    if users_report?
       @report.delete
       redirect "/homepage"
     else

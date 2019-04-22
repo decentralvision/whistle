@@ -1,5 +1,5 @@
 
-<a href="/homepage"> Home</a>
+<a href="/homepage"><button> Home</button></a>
 
 <h1>Create a New Report</h1>
 
@@ -9,15 +9,17 @@
 
 <form action="/report" method="POST" onkeypress="return event.keyCode != 13;">
   <label for="suspect_desc"> Detailed Description of Suspect</label>
-  <textarea id="suspect_desc" name="suspect_desc" cols="100" rows="10" required="required"></textarea>
+  <textarea id="suspect_desc" name="suspect_desc" cols="100" rows="10" required="required"> <%=@report.suspect_desc%></textarea>
   <label for="event_details"> Detailed Description of Event</label>
-  <textarea id="event_desc" name="event_desc" cols="100" rows="10" required="required"></textarea>
+  <textarea id="event_desc" name="event_desc" cols="100" rows="10" required="required"><%=@report.event_desc%> </textarea>
   <label> Location </label>
-  <input id="pac-input" class="controls" type="text" placeholder="Search">
   <div id="map"></div>
+  <input type="hidden" name="lat" id="lat" value="<%=@report.lat%>">
+  <input type="hidden" name="lng" id="lng" value="<%=@report.lng%>">
+  <h4>Latitude:</h4> <p id="original_lat"> <%=@report.lat%></p>
+  <h4>Longitude:</h4> <p id="original_lng"> <%=@report.lng%></p>
   <input id="submit" type="submit" value="Submit">
-  <input type="hidden" name="lat" id="lat">
-  <input type="hidden" name="lng" id="lng">
+  
 </form>
 
 

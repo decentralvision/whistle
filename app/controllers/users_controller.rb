@@ -61,11 +61,8 @@ class UsersController < ApplicationController
   end
   
   get "/homepage" do
-    if logged_in? 
-      erb :"/users/homepage.html"
-    else
-      redirect "/login"
-    end
+    redirect_if_not_logged_in
+    erb :"/users/homepage.html"
   end
   
 end
